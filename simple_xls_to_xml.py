@@ -21,6 +21,8 @@ def createXML():
     # create xml
     if filter_words is None:
         return
+        
+    new_filter = list()
     
     impl = xml.dom.minidom.getDOMImplementation()
     dom = impl.createDocument(None, "filters", None)
@@ -32,6 +34,9 @@ def createXML():
         # remove whitespace
         whitespace = re.compile("\s")
         f = re.sub(whitespace, "", f)
+        if f in new_filter:
+            continue
+        new_filter.append(f)
         # create element
         filter = dom.createElement("filter")
         filter.setAttribute("word", f)
