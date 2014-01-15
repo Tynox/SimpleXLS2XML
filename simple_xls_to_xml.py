@@ -1,6 +1,7 @@
 ﻿# encoding:utf-8
 
 import codecs
+import re
 import xlrd
 import xml.dom.minidom
 
@@ -22,7 +23,10 @@ def createXML():
     root = dom.documentElement
     
     for f in filter_words:
+        if len(f) == 0:
+            continue
         filter = dom.createElement("filter")
+        f = f.strip()
         filter.setAttribute("word", f)
         root.appendChild(filter)
         
