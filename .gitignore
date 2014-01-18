@@ -1,3 +1,4 @@
-*.xls
-*.xlsx
-*.xml
+.swp
+test
+test/*
+test/*.*
