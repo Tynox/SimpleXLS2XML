@@ -1,11 +1,64 @@
-﻿# encoding:utf-8
+﻿#!/usr/bin/env python
+# encoding:utf-8
+
+"""
+A Simple XLS convertor.
+It can convert XLS to XMl or CVS.
+
+author:Tynox
+website:http://tarkrul.info
+
+This is a free and unencumbered software into the public domain.
+For more information, please refer to <http://unlicense.org>
+"""
+
 
 import codecs
+import getopt
+import os
 import re
+import sys
 import xlrd
 import xml.dom.minidom
 
+version = 0.1
+
 filter_words = None
+
+
+def init():
+    """
+    Init and get arguments.
+    """
+    
+    # get options
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hv", ["--help", "--version"])
+    except getopt.GetoptError as err:
+        print str(err)
+        sys.exit()
+    else:
+        parseOpts(opts, args)
+
+
+def parseOpts(opts, args):
+    """
+    parse opts and arguments
+    """
+
+    shouldExit = False
+    
+    # check options. If operation is None, exit.
+    for o, a in opts:
+        if o in ("-h", "--help)":       # get help
+            getHelp()
+            shouldExit = True
+        else o in ("-v", "--version"):  # show version
+            showVersion()
+            shouldExit = True
+
+        if shouldExit:
+            sys.exit()
 
 
 def xlsRead():
