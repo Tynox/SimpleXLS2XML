@@ -19,26 +19,50 @@ import os
 import re
 import sys
 import xlrd
-import xml.dom.minidom
+#import xml.dom.minidom
+import xls_reader as XR
 
 version = 0.1
 
 filter_words = None
 
 
-def init():
+def init(argv):
     """
     Init and get arguments.
     """
     
     # get options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hv", ["--help", "--version"])
+        opts, args = getopt.getopt(sys.argv[1:], "hvr:s:", ["--help", "--version", "--root=", "--suffix="])
     except getopt.GetoptError as err:
         print str(err)
+        _get_help()
         sys.exit()
     else:
         parseOpts(opts, args)
+
+
+def _show_version():
+    print "Version:{0}".format(version)
+
+
+def _get_help():
+    """
+    get tool help
+    """
+
+    # show version
+    _show_version()
+
+    print "SimpleXLSConverter"
+    print "-"*10
+    print "SXC: convert XLS to XML/CVS."
+    print "useage: SimpleXLSConverter..py [-h|--help] [-v|--version]"
+    print "     -h --help       Show help"
+    print "     -v --version    Show version"
+    print "     -r --root       Set XML root name"
+    print "     -s --suffix     set target document type"
 
 
 def parseOpts(opts, args):
@@ -47,20 +71,33 @@ def parseOpts(opts, args):
     """
 
     shouldExit = False
+    root_name = None
     
     # check options. If operation is None, exit.
     for o, a in opts:
         if o in ("-h", "--help)":       # get help
-            getHelp()
+            _get_help()
             shouldExit = True
         else o in ("-v", "--version"):  # show version
-            showVersion()
+            _show_version()
             shouldExit = True
-
+        else o in ("-r", "--root"):     # set xml root name
+            root_name = a
+        else o in ("-s", "--suffix"):   # set target document type
+            suffix = a
+        
+        # help or version: exit.
         if shouldExit:
             sys.exit()
 
+    # get file
+    dir_source = args[0]
 
+    # parse xls
+    XR.reader(dir_source)
+
+
+"""
 def xlsRead():
     # reade xls
     global filter_words
@@ -68,8 +105,10 @@ def xlsRead():
     data = xlrd.open_workbook("filter.xlsx")
     table = data.sheets()[0]        # 获取第一个sheet
     filter_words = table.col_values(0)
+"""
     
-    
+   
+"""
 def createXML():
     # create xml
     if filter_words is None:
@@ -98,13 +137,11 @@ def createXML():
     out = codecs.open("filters.xml", "w", "utf-8")
     dom.writexml(out, addindent=" ", newl="\n", encoding="utf-8")
     out.close()
+"""
     
-    
-def createCVS():
-    # TODO:创建CVS
-    pass
     
     
 if __name__ == "__main__":
-    xlsRead()
-    createXML()
+    #xlsRead()
+    #createXML()
+    init(sys.argv)
