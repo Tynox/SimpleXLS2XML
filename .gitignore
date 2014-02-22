@@ -1,5 +1,5 @@
 .idea
-.swp
+*.swp
 test
 test/*
 test/*.*
