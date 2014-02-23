@@ -18,7 +18,7 @@ import getopt
 import os
 import re
 import sys
-import xlrd
+#import xlrd
 #import xml.dom.minidom
 import xls_reader as XR
 
@@ -34,7 +34,7 @@ def init(argv):
     
     # get options
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hvr:s:", ["--help", "--version", "--root=", "--suffix="])
+        opts, args = getopt.getopt(sys.argv[1:], "chn:vr:x", ["--cvs", "--help", , "--name=", "--version", "--root=", "--xml"])
     except getopt.GetoptError as err:
         print str(err)
         _get_help()
@@ -57,21 +57,35 @@ def _get_help():
 
     print "SimpleXLSConverter"
     print "-"*10
-    print "SXC: convert XLS to XML/CVS."
+    print "SXC: convert XLS to XML/CVS. [Convert to XML by default.]"
     print "useage: SimpleXLSConverter..py [-h|--help] [-v|--version]"
+    print "     -c --cvs        Convert to cvs"
     print "     -h --help       Show help"
-    print "     -v --version    Show version"
+    print "     -n --name       New file name"
     print "     -r --root       Set XML root name"
-    print "     -s --suffix     set target document type"
-
+    #print "     -s --suffix     set target document type"
+    print "     -v --version    Show version"
+    print "     -x --xml        Convert to xml"
 
 def parseOpts(opts, args):
     """
     parse opts and arguments
     """
 
+    # help or show version: exit and convert nothing
     shouldExit = False
+
+    # xml root name
     root_name = None
+
+    # create cvs?
+    create_cvs = False
+
+    # 'x' or 'xml' in args?
+    x_appeared = False
+
+    # only 'c' or 'cvs' in args? not create xml?
+    only_cvs = False
     
     # check options. If operation is None, exit.
     for o, a in opts:
@@ -85,6 +99,15 @@ def parseOpts(opts, args):
             root_name = a
         else o in ("-s", "--suffix"):   # set target document type
             suffix = a
+        else o in ("-n", "--name"):     # new file name
+            name = a
+        else o in ("-x", "--xml"):      # cerate xml
+            x_appeared = True
+            only_cvs = False
+        else o in ("-c", "--cvs"):      # create cvs
+            create_cvs = True
+            if not x_appeared:
+                only_cvs = True
         
         # help or version: exit.
         if shouldExit:
@@ -94,7 +117,15 @@ def parseOpts(opts, args):
     dir_source = args[0]
 
     # parse xls
-    XR.reader(dir_source)
+    data = XR.reader(dir_source)
+
+    # create XML or CVS
+    if create_cvs:
+        # TODO: create cvs
+        pass
+    if not only_cvs:
+        # TODO: create xml
+        pass
 
 
 """
