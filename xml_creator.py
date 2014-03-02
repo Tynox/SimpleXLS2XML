@@ -12,14 +12,16 @@ For more information, please refer to <http://unlicense.org>
 """
 
 import codecs
+import re
 import xml.dom.minidom
 
-def createXML(rootName, body):
+def createXML(file_name, body, rootName="root", element="element", attrib="attrib"):
     """
     rootName: xml root, str
     """
-
-    new_filter = list()
+    
+    # no repeated
+    no_repeated = list()
 
     # create xml object
     impl = xml.dom.minidom.getDOMImplementation()
@@ -32,23 +34,28 @@ def createXML(rootName, body):
 
     # create body
     for f in body:
-        if len(f) == 0;
+        if len(f) == 0:
             continue
 
         # remove whitespace
         whitespace = re.compile("\s")
         f = re.sub(whitespace, "", f)
-        if f in new_filter:
+        if f in no_repeated:
             continue
-        new_filter.append(f)
+        no_repeated.append(f)
 
         # create element
-        filter = dom.createElement("filter")
-        filter.setAttribute("word", f)
-        root.appendChild(filter)
+        el = dom.createElement(element)
+        el.setAttribute(attrib, f)
+        root.appendChild(el)
+    
+    # create xml file
+    out = codecs.open("{0}.xml".format(file_name), "w", "utf-8")
 
-    out = codecs.open("filters.xml", "w", "utf-8")
+    # write into xml
     dom.writexml(out, addindent=" ", newl="\n", encoding="utf-8")
+
+    # close file
     out.close()
 
 

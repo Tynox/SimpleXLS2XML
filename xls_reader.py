@@ -10,17 +10,25 @@ def reader(fName):
     fName: xls file name
     """
 
+    data = dict()
+
     # open xls file
-    data = xlrd.open_workbook(fName)
+    xls = xlrd.open_workbook(fName)
 
     # get sheet *
-    table = data.sheets()[0]
+    table = xls.sheets()[0]
     
     # get a col * data
-    data = table.col_values(0)
+    col = table.col_values(0)
+
+    # get a row data
+    row = table.col_values(0)
     
-    return
+    return col
 
 
 if __name__ == "__main__":
-    pass
+   import sys
+   f = sys.argv[1]
+   data = reader(f)
+   print data
